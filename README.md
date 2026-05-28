@@ -2,6 +2,17 @@
 
 Welcome to the enterprise-grade **Mock SolisCloud Platform API System**. This system provides a secure, high-performance, modular simulation of the **Ginlong (Solis) Technologies SolisCloud Platform API V2.0**, fully compliant with production specifications.
 
+> [!NOTE]
+> This mock system is tailored for large-scale integration environments, hardware-in-the-loop (HIL) simulators, and microservice testing. It enforces the exact security constraints, error payloads, and payload bounds as the commercial SolisCloud system.
+
+### 🌟 Key Core Capabilities
+* **🔒 Timing-Attack Spoof Prevention**: Protects authorization lines using constant-time `hmac.compare_digest` validations.
+* **🕰️ Date-Skew & Replay Block**: Rejects stale connection payloads (timestamp offsets skewing past 15 minutes).
+* **⛔ Tenant Direct Resource Safeguard**: Defends against IDOR attacks by mapping Stations/Inverters dynamically to client keys.
+* **🚦 Dual-Tier Token-Bucket Rate Limiter**: Independent controls for telemetry read paths vs general account APIs.
+* **🐳 Cloud-Ready Docker Architecture**: Multi-stage, non-root, system-isolated Docker execution settings.
+* **📖 Dynamic Swagger API Portal**: Deep, rich metadata describing security states at `/docs`.
+
 ---
 
 ## 🏗️ System Architecture & Directory Design
@@ -48,9 +59,8 @@ g:\SolisCloud-MockAPI-System\
 │   │       ├── weather.py    # Meteorological environmental routing
 │   │       └── stations.py   # Station/Plant routing endpoints
 │   │
-│   └── main.py                # App configuration, middleware injection, and router mounts
+│   └── main.py                # App configuration, middleware injection, router mounts (uvicorn target)
 │
-├── main.py                   # Clean root ASGI entrypoint (uvicorn target)
 ├── test_client.py            # Automated integration verification client
 ├── requirements.txt          # Python package requirements
 └── README.md                 # System Design & API Reference Manual
@@ -536,13 +546,24 @@ pip install -r requirements.txt
 ```
 
 ### 2. Launch the Application
-Start the Uvicorn ASGI server pointing at root `main:app`:
+Start the Uvicorn ASGI server pointing at the modular `app.main:app` target:
 ```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 ### 3. Automated Integration Tests
 Execute the verification suite to run all diagnostic, cryptographic, rate-limiting, and tenancy validations:
 ```bash
 python test_client.py
+```
+
+### 4. Running with Docker (Containerized)
+Build the secure multi-stage container image locally:
+```bash
+docker build -t soliscloud-mock-api:latest .
+```
+
+Run the containerized application (binding to port `8000` and mounting environment configs):
+```bash
+docker run -d --name soliscloud-api -p 8000:8000 soliscloud-mock-api:latest
 ```

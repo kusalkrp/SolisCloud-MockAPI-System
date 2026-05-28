@@ -1,6 +1,26 @@
 import os
 from typing import List
 
+def load_dotenv(dot_env_path: str = ".env"):
+    """
+    Lightweight, zero-dependency environment variables loader.
+    Populates os.environ from a local .env file if it exists.
+    """
+    if os.path.exists(dot_env_path):
+        with open(dot_env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("'\"")
+                    if key and key not in os.environ:
+                        os.environ[key] = val
+
+load_dotenv()
+
 class Settings:
     SOLIS_DISABLE_AUTH: bool = os.environ.get("SOLIS_DISABLE_AUTH", "false").lower() == "true"
     SOLIS_API_ID: str = os.environ.get("SOLIS_API_ID", "1300386381676644416")

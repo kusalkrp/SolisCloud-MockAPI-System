@@ -74,7 +74,7 @@ def run_tests():
         print(f"Server diagnostic check: {diag.status_code} - {diag.json()}")
     except requests.exceptions.ConnectionError:
         print("[-] CONNECTION ERROR: Please make sure the FastAPI server is running!")
-        print("    Run: uvicorn main:app --reload")
+        print("    Run: uvicorn app.main:app --reload")
         return
 
     # --- Test 1: Successful Inverter List ---
