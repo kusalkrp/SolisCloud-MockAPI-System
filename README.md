@@ -71,7 +71,7 @@ sequenceDiagram
     participant Rate as RateLimitMiddleware
     participant Headers as SecurityHeadersMiddleware
     participant Deps as API Dependencies (deps.py)
-    participant End as Feature Router (endpoints/)
+    participant Router as Feature Router (endpoints/)
     participant Cache as TTLCache (cache.py)
     participant DB as Mock DB (mock_db.py)
     participant Ex as Global Exceptions Handler
@@ -86,20 +86,20 @@ sequenceDiagram
             Deps-->>Ex: Raise SolisAuthenticationError
             Ex-->>Client: Return HTTP 401 (Structured SolisResponse JSON)
         else Authenticated Successfully
-            Deps->>End: Forward Request (Identity Context Attached)
-            End->>End: Run Relational Tenancy Ownership check
+            Deps->>Router: Forward Request (Identity Context Attached)
+            Router->>Router: Run Relational Tenancy Ownership check
             alt Direct Object Reference (IDOR) violation
-                End-->>Ex: Raise SolisTenancyError
+                Router-->>Ex: Raise SolisTenancyError
                 Ex-->>Client: Return HTTP 403 (Structured SolisResponse JSON)
             else Ownership Check Validated
                 alt Check Cached environmental readings (Weather)
-                    End->>Cache: Look up sensor SN
-                    Cache-->>End: Cache Hit
-                    End-->>Client: Return HTTP 200 (SolisResponse JSON)
+                    Router->>Cache: Look up sensor SN
+                    Cache-->>Router: Cache Hit
+                    Router-->>Client: Return HTTP 200 (SolisResponse JSON)
                 else Cache Miss / Other Route
-                    End->>DB: Query or Mutate Records thread-safely
-                    DB-->>End: Yield Mock Records
-                    End-->>Client: Return HTTP 200 (SolisResponse JSON)
+                    Router->>DB: Query or Mutate Records thread-safely
+                    DB-->>Router: Yield Mock Records
+                    Router-->>Client: Return HTTP 200 (SolisResponse JSON)
                 end
             end
         end
