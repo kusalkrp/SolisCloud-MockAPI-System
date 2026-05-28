@@ -1,0 +1,17 @@
+# Docker ignore patterns
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.gitignore
+Dockerfile
+.dockerignore
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+test_client.py
+CVS
+.DS_Store
