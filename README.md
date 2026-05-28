@@ -61,6 +61,12 @@ g:\SolisCloud-MockAPI-System\
 │   │
 │   └── main.py                # App configuration, middleware injection, router mounts (uvicorn target)
 │
+├── Docs/                         # Reference documentation & guides
+│   ├── SolisCloud_Platform_API_Documentation_V2.0.md
+│   └── INNOVATIVE_PROJECT_IDEAS.md  # AI/ML project ideas built on this API
+│
+├── Dockerfile                # Multi-stage secure production container
+├── .dockerignore             # Docker build context exclusions
 ├── test_client.py            # Automated integration verification client
 ├── requirements.txt          # Python package requirements
 └── README.md                 # System Design & API Reference Manual
